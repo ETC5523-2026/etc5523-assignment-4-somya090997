@@ -1,0 +1,22 @@
+Package: AusPak
+Title: Explore Australia v Pakistan One Day International Cricket
+Version: 0.0.0.9000
+Authors@R: 
+    person("Somya", "Verma", , "sver0044@student.monash.edu", role = c("aut", "cre"))
+Description: Provides per-over scoring data for men's one-day
+    internationals between Australia and Pakistan, a function that
+    summarises runs and wickets by phase of an innings, and a Shiny app
+    for comparing the two teams.
+License: MIT + file LICENSE
+Config/roxygen2/version: 8.1.0
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Depends: 
+    R (>= 4.1.0)
+LazyData: true
+Imports: 
+    bslib,
+    dplyr,
+    ggplot2,
+    rlang,
+    shiny

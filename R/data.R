@@ -1,0 +1,27 @@
+#' Australia v Pakistan men's ODI scoring, over by over
+#'
+#' Runs and wickets in each over of every men's One Day International
+#' between Australia and Pakistan in the Cricsheet archive, with running
+#' totals for each innings.
+#'
+#' @format A data frame with 4,153 rows and 10 columns:
+#' \describe{
+#'   \item{match_id}{Cricsheet match identifier}
+#'   \item{date}{Date the match started}
+#'   \item{venue}{Ground where the match was played}
+#'   \item{innings}{Innings number (1 or 2); super overs are excluded}
+#'   \item{batting_team}{Team batting in that innings}
+#'   \item{over}{Over number, starting at 1}
+#'   \item{over_runs}{Runs scored in the over, including extras}
+#'   \item{over_wickets}{Wickets in the over, all dismissal types including run-outs}
+#'   \item{score}{Cumulative runs at the end of the over}
+#'   \item{wickets}{Cumulative wickets at the end of the over}
+#' }
+#' @details Matches shortened by rain have fewer overs, and an innings that
+#'   ends early (all out or chase completed) stops at its final over. Match
+#'   results are not included.
+#' @source Ball-by-ball data from Cricsheet, <https://cricsheet.org>,
+#'   downloaded with the cricketdata package. Cricsheet data is shared
+#'   under an open-data licence, so check its current wording on the site
+#'   and keep this credit in the README too.
+"aus_pak_overs"

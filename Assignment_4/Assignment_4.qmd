@@ -1,0 +1,33 @@
+---
+title: "Assignment_4"
+author: "Somya"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library (dplyr)
+data(package = "cricketdata")
+```
+
+You can add options to executable code like this
+
+```{r}
+library(cricketdata)
+balls <- cricketdata::fetch_cricsheet(
+  type = "bbb",
+  gender = "male",
+  competition = "odis"
+)
+
+one_match <- balls |>
+  filter(match_id == 1000887)
+
+names(balls)
+one_match |> distinct(match_id, start_date, venue, batting_team)
+class(balls$match_id); class(balls$start_date)
+
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
