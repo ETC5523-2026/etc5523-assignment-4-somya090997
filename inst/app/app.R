@@ -3,7 +3,7 @@ library(bslib)
 library(ggplot2)
 library(AusPak)
 
-team_colours <- c("Australia" = "#C58A00", "Pakistan" = "#008000")
+team_colours <- c("Australia" = "#C58A00", "Pakistan" = "#009E73")
 min_matches  <- 3   # fewer matches than this is too thin to report
 year_range   <- range(as.integer(format(aus_pak_overs$date, "%Y")))
 
@@ -13,30 +13,58 @@ theme_app <- function(base_size = 14) {
     theme(
       panel.grid.minor = element_blank(),
       panel.grid.major.x = element_blank(),
+      panel.grid.major.y = element_line(colour = "#E3EAEF", linewidth = 0.4),
       text = element_text(colour = "#142B3A"),
       axis.text = element_text(colour = "#344955"),
+      axis.title = element_text(colour = "#344955"),
       legend.position = "top",
       legend.title = element_blank(),
+      legend.text = element_text(size = base_size),
       plot.title.position = "plot",
       plot.caption = element_text(colour = "#526773", hjust = 0)
     )
 }
 
 ui <- page_sidebar(
-  title = "Australia v Pakistan ODIs: where do the runs and wickets come?",
+  title = NULL,
+  fillable = FALSE,
   theme = bs_theme(
-    version = 5, bg = "#FFFFFF", fg = "#142B3A", primary = "#0072B2",
-    base_font = font_collection("Segoe UI", "Helvetica Neue", "Arial", "sans-serif")
+    version = 5, bg = "#F4F8FB", fg = "#142B3A", primary = "#0072B2",
+    base_font = font_collection("Inter", "Segoe UI", "Helvetica Neue",
+                                "Arial", "sans-serif")
   ),
-  tags$head(tags$style(HTML("
-    .question-box { background:#F1F6F9; border-left:4px solid #0072B2;
-                    padding:.75rem 1rem; margin-bottom:1rem; border-radius:4px; }
-    .shiny-output-error-validation { color:#8A4B00; background:#FFF6E5;
-                    border-left:4px solid #C58A00; padding:1rem; font-size:1.05rem; }
-    .guide h5 { margin-top:1.25rem; color:#0072B2; }
-  "))),
+  tags$head(
+    # Inter loads when online; the font stack above is the fallback
+    tags$link(rel = "stylesheet",
+              href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"),
+    tags$style(HTML("
+      .hero { background: linear-gradient(120deg, #0B2536 0%, #0F4C6B 60%, #0072B2 100%);
+              color: #FFFFFF; padding: 1.6rem 1.8rem; border-radius: 14px;
+              margin-bottom: 1.1rem; }
+      .hero h1 { font-weight: 800; font-size: 1.7rem; margin: 0 0 .35rem 0; }
+      .hero p  { margin: 0; font-size: 1.05rem; opacity: .95; }
+      .hero .tag { display:inline-block; background: rgba(255,255,255,.16);
+                   border-radius: 999px; padding: .15rem .75rem; font-size: .85rem;
+                   margin-bottom: .6rem; letter-spacing: .02em; }
+      .vb-aus { background: #C58A00 !important; color: #142B3A !important; }
+      .vb-pak { background: #0072B2 !important; color: #FFFFFF !important; }
+      .vb-aus .value-box-title, .vb-pak .value-box-title { font-size: .95rem; font-weight: 600; }
+      .vb-aus .value-box-value, .vb-pak .value-box-value { font-size: 2rem; font-weight: 800; }
+      .card { border: 0; box-shadow: 0 2px 10px rgba(20,43,58,.08); border-radius: 14px; }
+      .bslib-sidebar-layout > .sidebar { background: #FFFFFF; }
+      .takeaway { background: #F1F6F9; border-left: 5px solid #0072B2; border-radius: 6px;
+                  padding: .8rem 1rem; margin-bottom: 1rem; font-size: 1.05rem; }
+      .shiny-output-error-validation { color:#8A4B00; background:#FFF6E5;
+                  border-left:5px solid #C58A00; border-radius:6px; padding:1.1rem;
+                  font-size:1.1rem; }
+      .guide h5 { margin-top: 1.3rem; color: #0072B2; font-weight: 700; }
+      table.table { font-size: 1rem; }
+    "))
+  ),
+
   sidebar = sidebar(
     width = 320,
+    h5("Explore", style = "font-weight:800;"),
     radioButtons("innings", "Innings",
                  choices = c("Batting first (1st innings)" = 1, "Chasing (2nd innings)" = 2)),
     radioButtons("measure", "Measure",
@@ -47,15 +75,26 @@ ui <- page_sidebar(
     sliderInput("years", "Years", min = year_range[1], max = year_range[2],
                 value = year_range, step = 1, sep = "")
   ),
-  div(class = "question-box",
-      strong("Who it is for: "), "a cricket analyst or fan comparing Australia and Pakistan.",
-      br(),
-      strong("Question: "), "In which part of an ODI innings does each side score fastest
-    and lose wickets, and has that changed over time?"
+
+  div(class = "hero",
+      div(class = "tag", "For cricket analysts and fans"),
+      h1("Australia v Pakistan ODIs"),
+      p("In which part of an innings does each side score fastest and lose wickets,
+       and has that changed over time?")
   ),
+
+  layout_columns(
+    fill = FALSE,
+    value_box(title = "Australia: matches in view",
+              value = textOutput("n_aus"), class = "vb-aus"),
+    value_box(title = "Pakistan: matches in view",
+              value = textOutput("n_pak"), class = "vb-pak")
+  ),
+
   navset_card_tab(
     nav_panel("Explore",
-              plotOutput("plot", height = 380),
+              uiOutput("takeaway"),
+              plotOutput("plot", height = 400),
               tableOutput("table")
     ),
     nav_panel("How to use and read this",
@@ -75,9 +114,10 @@ ui <- page_sidebar(
                     tags$li(strong("Wickets per over: "), "mean wickets per over, counting every dismissal type including run-outs.")
                   ),
                   h5("How to read the results"),
-                  p("Taller bars or higher lines mean faster scoring or more wickets. Compare the
+                  p("Taller bars or higher lines mean faster scoring or more wickets lost. Compare the
           gold (Australia) and blue (Pakistan) bars within a phase to see who is stronger
-          there, then change the years to see whether the gap holds in other eras. Always
+          there, then change the years to see whether the gap holds in other eras. The
+          sentence above the chart names the largest gap for the current settings. Always
           check the match counts: a difference built on a handful of matches is weak evidence."),
                   h5("Limits"),
                   p("There are only 45 Australia v Pakistan ODIs in the data, so ranges narrow quickly.
@@ -103,6 +143,40 @@ server <- function(input, output, session) {
     d[d$matches >= min_matches, , drop = FALSE]
   })
 
+  # Matches in view for each team (innings and years only)
+  counts <- reactive({
+    d <- aus_pak_overs
+    yr <- as.integer(format(d$date, "%Y"))
+    d <- d[d$innings == as.integer(input$innings) &
+             yr >= input$years[1] & yr <= input$years[2], , drop = FALSE]
+    tapply(d$match_id, d$batting_team, function(x) length(unique(x)))
+  })
+  count_for <- function(team) {
+    x <- counts()
+    if (team %in% names(x) && !is.na(x[[team]])) x[[team]] else 0
+  }
+  output$n_aus <- renderText(count_for("Australia"))
+  output$n_pak <- renderText(count_for("Pakistan"))
+
+  output$takeaway <- renderUI({
+    req(input$by == "phase")
+    d <- usable()
+    req(length(unique(d$batting_team)) == 2)
+    d$value <- d[[input$measure]]
+    a <- d[d$batting_team == "Australia", c("phase", "value")]
+    p <- d[d$batting_team == "Pakistan",  c("phase", "value")]
+    m <- merge(a, p, by = "phase", suffixes = c("_aus", "_pak"))
+    req(nrow(m) > 0)
+    m$gap <- m$value_aus - m$value_pak
+    top <- m[which.max(abs(m$gap)), , drop = FALSE]
+    unit <- if (input$measure == "runs_per_over") "runs per over" else "wickets lost per over"
+    div(class = "takeaway",
+        strong("What stands out: "),
+        sprintf("the biggest gap is in the %s. Australia %.2f vs Pakistan %.2f %s.",
+                tolower(as.character(top$phase)), top$value_aus, top$value_pak, unit)
+    )
+  })
+
   output$plot <- renderPlot({
     d <- usable()
     validate(need(
@@ -113,27 +187,28 @@ server <- function(input, output, session) {
     ))
 
     d$value <- d[[input$measure]]
-    ylab <- if (input$measure == "runs_per_over") "Average runs per over" else "Average wickets per over"
+    ylab <- if (input$measure == "runs_per_over") "Average runs per over" else "Average wickets lost per over"
 
     if (input$by == "phase") {
+      d$label <- paste0(sprintf("%.2f", d$value), "\n", d$matches, " matches")
       ggplot(d, aes(phase, value, fill = batting_team)) +
         geom_col(position = position_dodge(width = 0.8), width = 0.7) +
-        geom_text(aes(label = paste(matches, "matches")),
-                  position = position_dodge(width = 0.8), vjust = -0.5,
-                  size = 3.8, colour = "#344955") +
+        geom_text(aes(label = label),
+                  position = position_dodge(width = 0.8), vjust = -0.35,
+                  lineheight = 0.95, size = 3.9, colour = "#344955") +
         scale_fill_manual(values = team_colours) +
-        scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
+        scale_y_continuous(expand = expansion(mult = c(0, 0.25))) +
         labs(x = NULL, y = ylab) +
         theme_app()
     } else {
       ggplot(d, aes(over, value, colour = batting_team)) +
-        geom_line(linewidth = 1) +
+        geom_line(linewidth = 1.2) +
         scale_colour_manual(values = team_colours) +
         labs(x = "Over", y = ylab,
              caption = paste("Overs bowled in fewer than", min_matches, "matches are hidden.")) +
         theme_app()
     }
-  })
+  }, alt = "Chart comparing Australia and Pakistan scoring or wickets by phase or over of an ODI innings")
 
   output$table <- renderTable({
     req(input$by == "phase")
@@ -147,7 +222,7 @@ server <- function(input, output, session) {
       `Wickets per over` = round(d$wickets_per_over, 3),
       check.names = FALSE
     )
-  })
+  }, striped = TRUE, hover = TRUE, width = "100%")
 }
 
 shinyApp(ui, server)
