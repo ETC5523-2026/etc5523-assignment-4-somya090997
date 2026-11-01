@@ -3,7 +3,14 @@ library(bslib)
 library(ggplot2)
 library(AusPak)
 
-team_colours <- c("Australia" = "#C58A00", "Pakistan" = "#009E73")
+# ---- Colours: change them here and every part of the app follows ----
+aus_col <- "#C58A00"   # Australia (gold)
+pak_col <- "#007A53"   # Pakistan (green)
+ink     <- "#142B3A"   # text
+chrome  <- "#26414B"   # neutral colour for controls and links
+page_bg <- "#FBF6EA"   # page background (soft cream)
+
+team_colours <- c("Australia" = aus_col, "Pakistan" = pak_col)
 min_matches  <- 3   # fewer matches than this is too thin to report
 year_range   <- range(as.integer(format(aus_pak_overs$date, "%Y")))
 
@@ -14,7 +21,7 @@ theme_app <- function(base_size = 14) {
       panel.grid.minor = element_blank(),
       panel.grid.major.x = element_blank(),
       panel.grid.major.y = element_line(colour = "#E3EAEF", linewidth = 0.4),
-      text = element_text(colour = "#142B3A"),
+      text = element_text(colour = ink),
       axis.text = element_text(colour = "#344955"),
       axis.title = element_text(colour = "#344955"),
       legend.position = "top",
@@ -25,11 +32,37 @@ theme_app <- function(base_size = 14) {
     )
 }
 
+app_css <- paste0("
+  .hero { background:
+            linear-gradient(90deg, ", aus_col, " 50%, ", pak_col, " 50%) bottom / 100% 8px no-repeat,
+            #10252E;
+          color: #FFFFFF; padding: 1.6rem 1.8rem 2rem 1.8rem; border-radius: 14px;
+          margin-bottom: 1.1rem; }
+  .hero h1 { font-weight: 800; font-size: 1.7rem; margin: 0 0 .35rem 0; }
+  .hero p  { margin: 0; font-size: 1.05rem; opacity: .95; }
+  .hero .tag { display:inline-block; background: rgba(255,255,255,.16);
+               border-radius: 999px; padding: .15rem .75rem; font-size: .85rem;
+               margin-bottom: .6rem; letter-spacing: .02em; }
+  .vb-aus { background: ", aus_col, " !important; color: ", ink, " !important; }
+  .vb-pak { background: ", pak_col, " !important; color: #FFFFFF !important; }
+  .vb-aus .value-box-title, .vb-pak .value-box-title { font-size: .95rem; font-weight: 600; }
+  .vb-aus .value-box-value, .vb-pak .value-box-value { font-size: 2rem; font-weight: 800; }
+  .card { background: #FFFFFF; border: 0; box-shadow: 0 2px 10px rgba(20,43,58,.08); border-radius: 14px; }
+  .bslib-sidebar-layout > .sidebar { background: #FFFFFF; }
+  .takeaway { background: #F1F6F9; border-left: 5px solid ", chrome, "; border-radius: 6px;
+              padding: .8rem 1rem; margin-bottom: 1rem; font-size: 1.05rem; }
+  .shiny-output-error-validation { color:#8A4B00; background:#FFF6E5;
+              border-left:5px solid ", aus_col, "; border-radius:6px; padding:1.1rem;
+              font-size:1.1rem; }
+  .guide h5 { margin-top: 1.3rem; color: ", chrome, "; font-weight: 700; }
+  table.table { font-size: 1rem; }
+")
+
 ui <- page_sidebar(
   title = NULL,
   fillable = FALSE,
   theme = bs_theme(
-    version = 5, bg = "#F4F8FB", fg = "#142B3A", primary = "#0072B2",
+    version = 5, bg = page_bg, fg = ink, primary = chrome,
     base_font = font_collection("Inter", "Segoe UI", "Helvetica Neue",
                                 "Arial", "sans-serif")
   ),
@@ -37,29 +70,7 @@ ui <- page_sidebar(
     # Inter loads when online; the font stack above is the fallback
     tags$link(rel = "stylesheet",
               href = "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"),
-    tags$style(HTML("
-      .hero { background: linear-gradient(120deg, #0B2536 0%, #0F4C6B 60%, #0072B2 100%);
-              color: #FFFFFF; padding: 1.6rem 1.8rem; border-radius: 14px;
-              margin-bottom: 1.1rem; }
-      .hero h1 { font-weight: 800; font-size: 1.7rem; margin: 0 0 .35rem 0; }
-      .hero p  { margin: 0; font-size: 1.05rem; opacity: .95; }
-      .hero .tag { display:inline-block; background: rgba(255,255,255,.16);
-                   border-radius: 999px; padding: .15rem .75rem; font-size: .85rem;
-                   margin-bottom: .6rem; letter-spacing: .02em; }
-      .vb-aus { background: #C58A00 !important; color: #142B3A !important; }
-      .vb-pak { background: #0072B2 !important; color: #FFFFFF !important; }
-      .vb-aus .value-box-title, .vb-pak .value-box-title { font-size: .95rem; font-weight: 600; }
-      .vb-aus .value-box-value, .vb-pak .value-box-value { font-size: 2rem; font-weight: 800; }
-      .card { border: 0; box-shadow: 0 2px 10px rgba(20,43,58,.08); border-radius: 14px; }
-      .bslib-sidebar-layout > .sidebar { background: #FFFFFF; }
-      .takeaway { background: #F1F6F9; border-left: 5px solid #0072B2; border-radius: 6px;
-                  padding: .8rem 1rem; margin-bottom: 1rem; font-size: 1.05rem; }
-      .shiny-output-error-validation { color:#8A4B00; background:#FFF6E5;
-                  border-left:5px solid #C58A00; border-radius:6px; padding:1.1rem;
-                  font-size:1.1rem; }
-      .guide h5 { margin-top: 1.3rem; color: #0072B2; font-weight: 700; }
-      table.table { font-size: 1rem; }
-    "))
+    tags$style(HTML(app_css))
   ),
 
   sidebar = sidebar(
@@ -115,7 +126,7 @@ ui <- page_sidebar(
                   ),
                   h5("How to read the results"),
                   p("Taller bars or higher lines mean faster scoring or more wickets lost. Compare the
-          gold (Australia) and blue (Pakistan) bars within a phase to see who is stronger
+          gold (Australia) and green (Pakistan) bars within a phase to see who is stronger
           there, then change the years to see whether the gap holds in other eras. The
           sentence above the chart names the largest gap for the current settings. Always
           check the match counts: a difference built on a handful of matches is weak evidence."),
