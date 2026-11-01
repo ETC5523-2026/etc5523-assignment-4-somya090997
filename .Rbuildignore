@@ -4,3 +4,5 @@
 ^AusPak\.Rproj$
 ^\.Rproj\.user$
 ^Assignment_4$
+^vignettes/\.quarto$
+^vignettes/*_files$

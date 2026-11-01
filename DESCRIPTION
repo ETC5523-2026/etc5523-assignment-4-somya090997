@@ -20,3 +20,7 @@ Imports:
     ggplot2,
     rlang,
     shiny
+Suggests: 
+    knitr,
+    quarto
+VignetteBuilder: quarto
