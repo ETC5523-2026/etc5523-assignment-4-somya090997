@@ -3,12 +3,11 @@ library(bslib)
 library(ggplot2)
 library(AusPak)
 
-# ---- Colours: change them here and every part of the app follows ----
-aus_col <- "#C58A00"   # Australia (gold)
-pak_col <- "#007A53"   # Pakistan (green)
-ink     <- "#142B3A"   # text
-chrome  <- "#26414B"   # neutral colour for controls and links
-page_bg <- "#FBF6EA"   # page background (soft cream)
+aus_col <- "#C58A00"
+pak_col <- "#007A53"
+ink     <- "#142B3A"
+chrome  <- "#26414B"
+page_bg <- "#FBF6EA"
 
 team_colours <- c("Australia" = aus_col, "Pakistan" = pak_col)
 min_matches  <- 3   # fewer matches than this is too thin to report
@@ -56,6 +55,10 @@ app_css <- paste0("
               font-size:1.1rem; }
   .guide h5 { margin-top: 1.3rem; color: ", chrome, "; font-weight: 700; }
   table.table { font-size: 1rem; }
+  .glossary summary { font-weight: 700; cursor: pointer; color: ", chrome, "; margin-bottom: .5rem; }
+  .glossary dt { font-weight: 700; margin-top: .6rem; font-size: .95rem; }
+  .glossary dd { margin: 0; font-size: .9rem; color: #344955; }
+  .glossary-note { font-size: .82rem; color: #526773; margin-top: .8rem; }
 ")
 
 ui <- page_sidebar(
@@ -84,7 +87,27 @@ ui <- page_sidebar(
     radioButtons("by", "Show by",
                  choices = c("Phase of innings" = "phase", "Each over" = "over")),
     sliderInput("years", "Years", min = year_range[1], max = year_range[2],
-                value = year_range, step = 1, sep = "")
+                value = year_range, step = 1, sep = ""),
+
+    hr(),
+    tags$details(
+      class = "glossary", open = "open",
+      tags$summary("What do the phases mean?"),
+      tags$dl(
+        tags$dt("Powerplay (overs 1-10)"),
+        tags$dd("The opening overs. Fielding restrictions apply, so batters can score
+                 quickly, and the new ball can also bring early wickets."),
+        tags$dt("Middle (overs 11-40)"),
+        tags$dd("The longest stretch. Restrictions ease, and teams usually build the
+                 innings steadily and try to keep wickets in hand."),
+        tags$dt("Death (overs 41-50)"),
+        tags$dd("The closing overs. Batters usually attack, so runs come faster, and
+                 wickets can fall as they take risks.")
+      ),
+      p(class = "glossary-note",
+        "The app sorts overs into these bands by over number only. Rules have changed
+         over the years, and rain-shortened matches are still grouped by over number.")
+    )
   ),
 
   div(class = "hero",
