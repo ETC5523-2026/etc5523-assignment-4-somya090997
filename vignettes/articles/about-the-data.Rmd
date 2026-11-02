@@ -1,0 +1,46 @@
+---
+title: "About the data"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(AusPak)
+```
+## Where the data comes from
+
+Ball-by-ball records from [Cricsheet](https://cricsheet.org), downloaded with
+the cricketdata package. The script `data-raw/odi-overs.R` keeps every men's
+ODI in which Australia and Pakistan played each other, drops super overs, and
+summarises each innings over by over.
+
+## What is in `aus_pak_overs`
+
+```{r}
+length(unique(aus_pak_overs$match_id))   # number of matches
+range(aus_pak_overs$date)                # first and last match dates
+str(aus_pak_overs)
+```
+
+| Column | Meaning |
+|---|---|
+| `match_id` | Cricsheet match identifier |
+| `date` | Date the match started |
+| `venue` | Ground |
+| `innings` | 1 (batting first) or 2 (chasing) |
+| `batting_team` | Team batting in that innings |
+| `over` | Over number, from 1 |
+| `over_runs` | Runs in the over, including extras |
+| `over_wickets` | Wickets in the over, all dismissal types |
+| `score`, `wickets` | Running totals at the end of the over |
+
+## Things to keep in mind
+
+- Rain-shortened matches are still labelled by over number.
+- Late overs come from fewer matches, because innings end early.
+- Wickets include run-outs and every other dismissal type.

@@ -1,4 +1,33 @@
 url: https://etc5523-2026.github.io/etc5523-assignment-4-somya090997/
+
 template:
   bootstrap: 5
+  bootswatch: flatly
+  bslib:
+    primary: "#26414B"
+    base_font: {google: "Inter"}
+    heading_font: {google: "Inter"}
+
+navbar:
+  bg: primary
+
+home:
+  title: "AusPak: Australia v Pakistan ODI scoring"
+  description: >
+    Explore how Australia and Pakistan score runs and lose wickets
+    across the phases of a men's one-day international.
+
+reference:
+  - title: Explore the data
+    desc: Summarise runs and wickets by phase of an innings.
+    contents:
+      - phase_summary
+  - title: Launch the app
+    desc: Open the Shiny app that answers the package's question.
+    contents:
+      - run_app
+  - title: Data
+    desc: Per-over scoring for every Australia v Pakistan men's ODI in Cricsheet.
+    contents:
+      - aus_pak_overs
 
