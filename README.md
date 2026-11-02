@@ -35,71 +35,93 @@ measure (runs or wickets per over), whether to view phases or individual
 overs, and a range of years. A second tab explains the fields and how to
 read the results.
 
-## Example
+<!-- ## Example -->
 
-`phase_summary()` returns the average runs and wickets per over by phase
-for each team. Here, for the chasing innings in matches from 2010 to
-2020:
+<!-- `phase_summary()` returns the average runs and wickets per over by phase for -->
 
-``` r
-library(AusPak)
+<!-- each team. Here, for the chasing innings in matches from 2010 to 2020: -->
 
-phase_summary(aus_pak_overs, innings = 2, years = c(2010, 2020))
-#> # A tibble: 6 × 5
-#>   batting_team phase            matches runs_per_over wickets_per_over
-#>   <chr>        <fct>              <int>         <dbl>            <dbl>
-#> 1 Australia    Powerplay (1-10)       9          5.16           0.122 
-#> 2 Australia    Middle (11-40)         9          5.06           0.0871
-#> 3 Australia    Death (41+)            8          6.59           0.131 
-#> 4 Pakistan     Powerplay (1-10)      15          4.58           0.127 
-#> 5 Pakistan     Middle (11-40)        15          4.94           0.167 
-#> 6 Pakistan     Death (41+)           12          5.89           0.443
-```
+<!-- ```{r example} -->
 
-Read the `matches` column alongside the averages. Late overs come from
-fewer matches because innings end early, so differences built on a
-handful of matches are weak evidence.
+<!-- library(AusPak) -->
 
-## What is in the package
+<!-- phase_summary(aus_pak_overs, innings = 2, years = c(2010, 2020)) -->
 
-| Component | What it does |
-|----|----|
-| `aus_pak_overs` | Per-over runs and wickets for each innings of each match, with running totals |
-| `phase_summary()` | Average runs and wickets per over by team and phase (or by over), for an innings and range of years |
-| `run_app()` | Launches the Shiny app |
+<!-- ``` -->
 
-The data is built by `data-raw/odi-overs.R`, which downloads the ODI
-archive and keeps Australia v Pakistan matches. Phases are overs 1 to 10
-(powerplay), 11 to 40 (middle) and 41 onwards (death). Wickets include
-all dismissal types, including run-outs.
+<!-- Read the `matches` column alongside the averages. Late overs come from -->
 
-## Data source
+<!-- fewer matches because innings end early, so differences built on a handful of -->
 
-Ball-by-ball data from [Cricsheet](https://cricsheet.org), downloaded
-with the [cricketdata](https://pkg.robjhyndman.com/cricketdata/)
-package. Cricsheet data is shared under an open-data licence; see the
-Cricsheet site for its current terms.
+<!-- matches are weak evidence. -->
 
-The plot styling and the per-over summarising approach are adapted from
-an ETC5523 workshop.
+<!-- ## What is in the package -->
 
-## Generative AI declaration
+<!-- | Component | What it does | -->
 
-I used AI in the following ways:
+<!-- |---|---| -->
 
-**(i) Generate ideas or structure suggestions**
+<!-- | `aus_pak_overs` | Per-over runs and wickets for each innings of each match, with running totals | -->
 
-I used ChatGPT (GPT-6) to seek suggestions for structuring the pkgdown
-website, adding documentation pages and improving the Shiny application
-layout.
+<!-- | `phase_summary()` | Average runs and wickets per over by team and phase (or by over), for an innings and range of years | -->
 
-**(ii) Generate other aspects of the assessment**
+<!-- | `run_app()` | Launches the Shiny app | -->
 
-I used ChatGPT (GPT-6) to troubleshoot R coding errors related to
-package development, dataset creation, package installation and pkgdown
-website generation.
+<!-- The data is built by `data-raw/odi-overs.R`, which downloads the ODI archive -->
 
-**AI chat Link**
+<!-- and keeps Australia v Pakistan matches. Phases are overs 1 to 10 (powerplay), -->
 
-Please find the link to my [AI
-chat](https://chatgpt.com/share/6ae813e4-f970-83ec-93af-a5e3c76fe81a)
+<!-- 11 to 40 (middle) and 41 onwards (death). Wickets include all dismissal -->
+
+<!-- types, including run-outs. -->
+
+<!-- ## Data source -->
+
+<!-- Ball-by-ball data from [Cricsheet](https://cricsheet.org), downloaded with -->
+
+<!-- the [cricketdata](https://pkg.robjhyndman.com/cricketdata/) package. Cricsheet -->
+
+<!-- data is shared under an open-data licence; see the Cricsheet site for its -->
+
+<!-- current terms. -->
+
+<!-- The plot styling and the per-over summarising approach are adapted from an -->
+
+<!-- ETC5523 workshop. -->
+
+<!-- ## Generative AI declaration -->
+
+<!-- I used AI in the following ways: -->
+
+<!-- **(i) Generate ideas or structure suggestions** -->
+
+<!-- I used ChatGPT (GPT-6) to seek suggestions for structuring the pkgdown website, adding documentation pages and improving the Shiny application layout. -->
+
+<!-- **(ii) Generate other aspects of the assessment** -->
+
+<!-- I used ChatGPT (GPT-6) to troubleshoot R coding errors related to package development, dataset creation, package installation and pkgdown website generation. -->
+
+<!-- **AI chat Link** -->
+
+<!-- Please find the link to my [AI chat](https://chatgpt.com/share/6ae813e4-f970-83ec-93af-a5e3c76fe81a) -->
+
+## Where the data comes from
+
+Ball-by-ball records from [Cricsheet](https://cricsheet.org), downloaded
+with the cricketdata package. The script `data-raw/odi-overs.R` keeps
+every men’s ODI in which Australia and Pakistan played each other, drops
+super overs, and summarises each innings over by over.
+
+## What is in `aus_pak_overs`
+
+| Column             | Meaning                                  |
+|--------------------|------------------------------------------|
+| `match_id`         | Cricsheet match identifier               |
+| `date`             | Date the match started                   |
+| `venue`            | Ground                                   |
+| `innings`          | 1 (batting first) or 2 (chasing)         |
+| `batting_team`     | Team batting in that innings             |
+| `over`             | Over number, from 1                      |
+| `over_runs`        | Runs in the over, including extras       |
+| `over_wickets`     | Wickets in the over, all dismissal types |
+| `score`, `wickets` | Running totals at the end of the over    |
