@@ -36,7 +36,7 @@ run_app()
 The app opens in a window or in your browser. Press the stop button in the R
 console when you want to close it.
 
-## Use the controls
+## What The Control Does?
 
 | Control | What it does |
 |---|---|
@@ -51,7 +51,7 @@ section "What do the phases mean?" in the sidebar defines the phases:
 powerplay is overs 1 to 10, middle is overs 11 to 40, and death is overs 41
 onwards.
 
-## Interpret the outputs
+## How To Read the Results?
 
 1. Start with the sentence under "What stands out". It names the phase with
    the biggest gap between the teams for the current settings.
