@@ -89,21 +89,26 @@ read the results.
 
 <!-- ETC5523 workshop. -->
 
-<!-- ## Generative AI declaration -->
+## Generative AI declaration
 
-<!-- I used AI in the following ways: -->
+I used AI in the following ways:
 
-<!-- **(i) Generate ideas or structure suggestions** -->
+**(i) Generate ideas or structure suggestions**
 
-<!-- I used ChatGPT (GPT-6) to seek suggestions for structuring the pkgdown website, adding documentation pages and improving the Shiny application layout. -->
+I used ChatGPT (GPT-6) to seek suggestions for structuring the pkgdown
+website, adding documentation pages and improving the Shiny application
+layout.
 
-<!-- **(ii) Generate other aspects of the assessment** -->
+**(ii) Generate other aspects of the assessment**
 
-<!-- I used ChatGPT (GPT-6) to troubleshoot R coding errors related to package development, dataset creation, package installation and pkgdown website generation. -->
+I used ChatGPT (GPT-6) to troubleshoot R coding errors related to
+package development, dataset creation, package installation and pkgdown
+website generation.
 
-<!-- **AI chat Link** -->
+**AI chat Link**
 
-<!-- Please find the link to my [AI chat](https://chatgpt.com/share/6ae813e4-f970-83ec-93af-a5e3c76fe81a) -->
+Please find the link to my [AI
+chat](https://chatgpt.com/share/6ae813e4-f970-83ec-93af-a5e3c76fe81a)
 
 ## Where the data comes from
 
