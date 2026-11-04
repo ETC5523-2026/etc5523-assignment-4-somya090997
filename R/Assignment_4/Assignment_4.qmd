@@ -11,8 +11,6 @@ library (dplyr)
 data(package = "cricketdata")
 ```
 
-You can add options to executable code like this
-
 ```{r}
 library(cricketdata)
 balls <- cricketdata::fetch_cricsheet(
